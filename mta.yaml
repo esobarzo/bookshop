@@ -1,0 +1,28 @@
+ID: bookshop
+_schema-version: '1.1'
+version: 1.0.0
+modules:
+  - name: bookshop-srv
+    type: nodejs
+    path: .  # Apunta a la raíz para el servicio Node.js
+    provides:
+      - name: srv_api
+    properties:
+      EXIT: 1
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: bookshop-db  # Referencia al módulo de base de datos
+  - name: bookshop-db
+    type: hdb
+    path: db/  # Añade esta línea para apuntar a la carpeta db/
+    parameters:
+      memory: 256M
+      disk-quota: 512M
+    requires:
+      - name: bookshop-db-hdi  # Referencia al recurso HDI
+resources:
+  - name: bookshop-db-hdi  # Nombre único para el recurso HDI
+    type: com.sap.xs.hdi-container
+    properties:
+      hdi-service-name: ${service-name}
